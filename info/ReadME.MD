@@ -1,4 +1,6 @@
-# Preview
-<image src="https://cdn.discordapp.com/attachments/607916656697671704/849939415400316938/unknown.png"><br>
+# Command Preview
+### Without permissions
+<image src="https://media.discordapp.net/attachments/607916656697671704/849993497922109490/unknown.png?width=386&height=277"><br>
 --------------------------------
-<image src="https://cdn.discordapp.com/attachments/607916656697671704/849939873569439754/unknown.png">
+### With permissions
+<image src="https://media.discordapp.net/attachments/607916656697671704/849991915583307786/unknown.png?width=380&height=497">
