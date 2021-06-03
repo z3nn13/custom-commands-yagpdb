@@ -2,6 +2,7 @@
         Recommended Trigger: \A(?:\-|<@!?204255221017214977>)\s*(?:r(?:ole)?\s*i(?:nfo)?)(?: +|\z)
         Trigger Type: Regex
         Usage: -roleinfo [ID/Mention/Name/Position]
+        Aliases: ri,rolei,rinfo
 
         Copyright (c): zen | ゼン#0008; 2021
         License: MIT
