@@ -1,7 +1,7 @@
 {{/*
         Recommended Trigger: \A(?:\-|<@!?204255221017214977>)\s*(?:r(?:ole)?\s*i(?:nfo)?)(?: +|\z)
         Trigger Type: Regex
-        Usage: -roleinfo [ID/Mention/Name/Position]
+        Usage: -roleinfo <Role:ID/Mention/Name/Position> [-p]
         Aliases: ri,rolei,rinfo
 
         Copyright (c): zen | ゼン#0008; 2021
@@ -11,12 +11,16 @@
 */}}
 
 {{/* Global Variables */}}
-{{$help := cembed "title" "RoleInfo/RInfo/Ri" "description" (print "\x60\x60\x60Roleinfo [Role:Name/Mention/ID/Position]\x60\x60\x60Shows information about a role")}}
-{{$role := ""}}{{$errorMsg := ""}}{{$err := false}}{{$Args := .StrippedMsg}}
+{{$help := cembed "title" "RoleInfo/RInfo/Ri" "description" (print "```Roleinfo [Role:Name/Mention/ID/Position]``````[-p p:Switch - Include Permissions]```Shows Information about a role")}}
 {{$guildRoles := cslice.AppendSlice .Guild.Roles}} {{$listroles := split (exec "listroles" ) "\n"}}
+{{$role := ""}}{{$errorMsg := ""}}{{$err := false}}{{$Args := .StrippedMsg}}{{$permFlag := false}}
 
 {{/* Checking Input */}}
 {{if .CmdArgs}}
+        {{if reFind `\s+\-(?:p(?:erm(?:ission)?)?s?)` $Args}}
+                {{$Args = reReplace `\s+\-(?:p(?:erm(?:ission)?)?s?)` $Args ""}}
+                {{$permFlag = true}}
+        {{end}}
         {{ if $roleID := reFind `\d{17,19}` $Args|toInt64}}{{/* Mention or ID */}}
                 {{ with .Guild.Role $roleID}}
                         {{ $role = .}}
@@ -81,26 +85,29 @@
         ( sdict "name" "• Position ↓" "value" $final_pos "inline" true)
         ( sdict "name" "• Color" "value" (printf "#%x" .Color ) "inline" true)
         ( sdict "name" "• Mentionable" "value" $mentionable "inline" true)}}
-        
+        {{$embed.Set "footer" (sdict "text" (print "Triggered By • " $.User.String " • Use `-p` flag to view perms ") "icon_url" ($.User.AvatarURL "256"))}}
+
         {{/* Credits To Satty#9361 */}}
-        {{ $pbit := .Permissions}}
-        {{ $perms := cslice "Create Invite" "Kick Members" "Ban Members" "Administrator" "Manage Channels" "Manage Server" "Add Reactions" "View Audit Log" "Priority Speaker" "Video" "View Channels" "Send Messages" "Send TTS Messages" "Manage Messages" "Embed Links" "Attach Files" "Read Message History" "Mention @everyone" "Use External Emoji" "View Server Insights" "Connect" "Speak" "Mute Members" "Deafen Members" "Move Members" "Use Voice Activity" "Change Nickname" "Manage Nicknames" "Manage Roles" "Manage Webhooks" "Use Slash Commands" "Request to Speak"}}
-        {{ $enabled := cslice}}{{ $disabled := cslice}}
-        {{ range seq 0 (len $perms) }}
-                {{- if mod $pbit 2 -}}{{- $enabled = $enabled.Append (print "<:c_:838811489581137961> " (index $perms .)) -}}
-                {{- else -}}{{- $disabled = $disabled.Append (print "<:x_:832257188168859649> " (index $perms .)) -}}{{- end -}}
-                {{- $pbit = div $pbit 2 -}}
-        {{- end }}
-        {{/* Arranging them in columns */}}
-        {{ $split := split (print (joinStr "\n" $enabled.StringSlice) "\n" (joinStr "\n" $disabled.StringSlice)) "\n"}}
-        {{ $fields = $fields.AppendSlice (cslice
-        (sdict "name" "• Permissions" "value" (joinStr "\n" (slice $split 0 11)) "inline" true)
-        (sdict "name" "​" "value" (joinStr "\n" (slice $split 11 22)) "inline" true)
-        (sdict "name" "​" "value" (joinStr "\n" (slice $split 22)) "inline" true))}}
+        {{if $permFlag}}
+                {{ $pbit := .Permissions}}
+                {{ $perms := cslice "Create Invite" "Kick Members" "Ban Members" "Administrator" "Manage Channels" "Manage Server" "Add Reactions" "View Audit Log" "Priority Speaker" "Video" "View Channels" "Send Messages" "Send TTS Messages" "Manage Messages" "Embed Links" "Attach Files" "Read Message History" "Mention @everyone" "Use External Emoji" "View Server Insights" "Connect" "Speak" "Mute Members" "Deafen Members" "Move Members" "Use Voice Activity" "Change Nickname" "Manage Nicknames" "Manage Roles" "Manage Webhooks" "Use Slash Commands" "Request to Speak"}}
+                {{ $enabled := cslice}}{{ $disabled := cslice}}
+                {{ range seq 0 (len $perms) }}
+                        {{- if mod $pbit 2 -}}{{- $enabled = $enabled.Append (print "<:c_:838811489581137961> " (index $perms .)) -}}
+                        {{- else -}}{{- $disabled = $disabled.Append (print "<:x_:832257188168859649> " (index $perms .)) -}}{{- end -}}
+                        {{- $pbit = div $pbit 2 -}}
+                {{- end }}
+                {{/* Arranging them in columns */}}
+                {{ $split := split (print (joinStr "\n" $enabled.StringSlice) "\n" (joinStr "\n" $disabled.StringSlice)) "\n"}}
+                {{ $fields = $fields.AppendSlice (cslice
+                (sdict "name" "• Permissions" "value" (joinStr "\n" (slice $split 0 11)) "inline" true)
+                (sdict "name" "​" "value" (joinStr "\n" (slice $split 11 22)) "inline" true)
+                (sdict "name" "​" "value" (joinStr "\n" (slice $split 22)) "inline" true))}}
+                {{$embed.Set "footer" (sdict "text" (print "Triggered By • " $.User.String) "icon_url" ($.User.AvatarURL "256"))}}
+        {{end}}
 
 
         {{$embed.Set "color" .Color}}
-        {{$embed.Set "footer" (sdict "text" (print "Triggered By • " $.User.String) "icon_url" ($.User.AvatarURL "256"))}}
         {{$embed.Set "fields" $fields}}
         {{ sendMessage nil (cembed $embed)}}
 {{ end }}
