@@ -2,7 +2,7 @@
         Recommended Trigger: \A(?:\-|<@!?204255221017214977>)\s*(?:r(?:ole)?\s*i(?:nfo)?)(?: +|\z)
         Trigger Type: Regex
         Usage: -roleinfo <Role:ID/Mention/Name/Position> [-p]
-        Aliases: ri,rolei,rinfo
+        Aliases: ri, rolei, rinfo
 
         Copyright (c): zen | ゼン#0008; 2021
         License: MIT
@@ -93,16 +93,16 @@
                 {{ $perms := cslice "Create Invite" "Kick Members" "Ban Members" "Administrator" "Manage Channels" "Manage Server" "Add Reactions" "View Audit Log" "Priority Speaker" "Video" "View Channels" "Send Messages" "Send TTS Messages" "Manage Messages" "Embed Links" "Attach Files" "Read Message History" "Mention @everyone" "Use External Emoji" "View Server Insights" "Connect" "Speak" "Mute Members" "Deafen Members" "Move Members" "Use Voice Activity" "Change Nickname" "Manage Nicknames" "Manage Roles" "Manage Webhooks" "Use Slash Commands" "Request to Speak"}}
                 {{ $enabled := cslice}}{{ $disabled := cslice}}
                 {{ range seq 0 (len $perms) }}
-                        {{- if mod $pbit 2 -}}{{- $enabled = $enabled.Append (print "<:c_:838811489581137961> " (index $perms .)) -}}
-                        {{- else -}}{{- $disabled = $disabled.Append (print "<:x_:832257188168859649> " (index $perms .)) -}}{{- end -}}
+                        {{- if mod $pbit 2 -}}{{- $enabled = $enabled.Append (print "`✅` " (index $perms .)) -}}
+                        {{- else -}}{{- $disabled = $disabled.Append (print "`✖️` " (index $perms .)) -}}{{- end -}}
                         {{- $pbit = div $pbit 2 -}}
                 {{- end }}
                 {{/* Arranging them in columns */}}
                 {{ $split := split (print (joinStr "\n" $enabled.StringSlice) "\n" (joinStr "\n" $disabled.StringSlice)) "\n"}}
                 {{ $fields = $fields.AppendSlice (cslice
-                (sdict "name" "• Permissions" "value" (joinStr "\n" (slice $split 0 11)) "inline" true)
-                (sdict "name" "​" "value" (joinStr "\n" (slice $split 11 22)) "inline" true)
-                (sdict "name" "​" "value" (joinStr "\n" (slice $split 22)) "inline" true))}}
+                (sdict "name" "• Permissions" "value" (joinStr "\n" (slice $split 0 12)) "inline" true)
+                (sdict "name" "​" "value" (joinStr "\n" (slice $split 12 24)) "inline" true)
+                (sdict "name" "​" "value" (joinStr "\n" (slice $split 24)) "inline" true))}}
                 {{$embed.Set "footer" (sdict "text" (print "Triggered By • " $.User.String) "icon_url" ($.User.AvatarURL "256"))}}
         {{end}}
 
