@@ -5,7 +5,7 @@
 🍣 | Here is where I'll constantly update some custom commands that I created/modified.<br>
 🍣 | If you find any errors or have suggestions to make,<br>
 here's my contact info ^^
-> **Discord**
+> **Discord**<br>
 > Username: zen | ゼン#0008  
 > ID: 547202244278222868
 
