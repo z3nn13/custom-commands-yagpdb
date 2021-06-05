@@ -1,0 +1,151 @@
+{{/*
+    Trigger: \A(?:[1-7]|quit)\z
+*/}}
+{{if $db := dbGet 2021 "connect4"}}
+    {{/* Global variables */}}
+    {{ $data := sdict $db.Value}}
+    {{ $players := $data.players}}  
+    {{ $turn := $data.turn}}{{ $board := $data.board }}
+    {{ $cPlayer := index $players $turn|toInt64|userArg}}
+    
+    {{ $nextTurn := sub 3 $turn}}{{/* This was probably the line i'm most proud of wlol */}}
+    {{ $nPlayer := index $players $nextTurn|toInt64|userArg}}
+ 
+    {{ $input := $.Message.Content|toInt|add -1}}
+    {{if and (eq (.Message.Content|lower) "quit") (in $players (str .User.ID))}}
+        {{dbDel 2021 "connect4"}}
+    {{end}}
+    {{ if eq $cPlayer.ID $.User.ID}}
+        {{$slotCheck := (sdict "input" $input "board" $board "full" false)}}
+        {{template "slot_checker" $slotCheck}}
+        {{$newBoard := sdict "board" $slotCheck.board}}
+        {{template "board_maker" $newBoard}}
+        
+        {{if $slotCheck.full}}
+            {{sendMessage nil (complexMessage "content" (printf "%s, %q is already full.\nPlease pick another slot (1-7)" $cPlayer.Mention ($input|add 1|str))
+            "embed" (cembed $newBoard.board))}}
+        {{else}}
+            {{$winCheck := sdict "board" $board "gameWon" false "gameTie" false "turn" $turn}}
+            {{template "win_checker" $winCheck}}
+            {{if $winCheck.gameWon}}
+                {{dbDel 2021 "connect4"}}
+                {{$newBoard.board.Set "color" 0xffe100}}
+                {{sendMessage nil (complexMessage "content" (print $cPlayer.Mention " won!" ) "embed" (cembed $newBoard.board))}}
+            {{else if $winCheck.gameTie}}
+                {{dbDel 2021 "connect4"}}
+                {{$newBoard.board.Set  "color" 0xba19ff}}
+                {{sendMessage nil (complexMessage "content" (print "Owo what's this, the match is a draw" ) "embed" (cembed $newBoard.board))}}
+            {{else}}
+                {{$data.Set "board" $slotCheck.board}}
+                {{$data.Set "turn" $nextTurn}}
+                {{dbSet 2021 "connect4" $data}}
+                {{sendMessage nil (complexMessage "content" (printf "> %s dropped token in Slot (%d)\n%s, Please pick a slot (1-7)" $cPlayer.Mention ($input|add 1) $nPlayer.Mention) "embed" (cembed $newBoard.board))}}
+            {{end}}
+        {{end}}
+    {{end}}
+{{end}}
+
+{{define "board_maker" -}}
+    {{- $board := cslice.AppendSlice .board -}}
+    {{- $emojis := dict 0 "⚫" 1 "🔴" 2 "🟡" 10 "🔵" -}}
+    {{- $visual := "" -}}
+    {{- $board -}}
+    {{- range $board -}}
+        {{- range . -}}
+            {{- $visual = printf "%s%s " $visual ($emojis.Get .) -}}
+        {{- end -}}
+        {{- $visual = print $visual "\n" -}}
+    {{- end -}}
+    {{- $visual -}}
+    {{- $visual = print $visual "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣" -}}
+    {{- $embed := sdict "title" "Connect4" "description" $visual "footer" (sdict "text" "Powered by • Yagpdb.xyz") -}}
+    {{- .Set $embed -}}
+{{- end}}
+
+{{define "slot_checker" -}}
+    {{- $board := cslice.AppendSlice .board}}{{ $turn := .turn }}{{ $input := .input -}}
+    {{- $verti := cslice }}{{ $full := false }}{{$convert := cslice -}}    
+    {{- range $board -}}
+        {{- $verti = $verti.Append (index . $input) -}}
+        {{- if and (eq (index $verti 0) 10|not) (index $verti 0) -}}
+            {{- $full = true -}}
+        {{- end -}}
+        {{- if not $full -}}
+            {{- range $i,$v := $verti -}}
+                {{- if not $v -}}
+                    {{- $convert = $convert.AppendSlice (index $board $i) -}}
+                    {{- $convert.Set $input 10 -}}
+                    {{- $board.Set $i $convert -}}
+                    {{- $board -}}
+                {{- end -}}
+                {{- if $v -}}
+                    {{- (index $board (sub $i 1)).Set $input $turn -}}
+                {{- else if (and (eq $i (len $verti|add -1)) (not $v)) -}}
+                    {{- (index $board $i).Set $input $turn -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{- .Set "board" $board -}}
+    {{- .Set "full" $full -}}
+{{- end}}
+
+{{define "win_checker" -}}
+    {{- $gameWon := false}}{{$board := cslice.AppendSlice .board -}}
+    {{/* horizontal checking */}}
+    {{- range $row,$columns := $board -}}
+        {{- range seq 0 (len $columns) -}}
+            {{- if lt . (len $columns|add -3) -}}
+                {{- if eq (index $columns .) (index $columns (.|add 1)) (index $columns (.|add 2)) (index $columns (.|add 3)) -}}
+                    {{- $gameWon = true -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{/* vertical checking */}}
+    {{- range seq 0 7 -}}
+        {{- $lines := . -}}
+        {{- $verti := cslice -}}
+        {{- range $row,$columns := $board -}}
+            {{- $verti := $verti.Append (index $columns $lines) -}}
+        {{- end -}}
+        {{- range $index,$value := $verti -}}
+            {{- if lt $index (len $verti| add -3) -}}
+                {{- if eq (index $verti $index) (index $verti ($index|add 1)) (index $verti ($index|add 2)) (index $verti ($index|add 3)) -}}
+                {{- $game_won = true -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{/* diagonal checking */}}
+    {{- $diagBoard := cslice -}}
+    {{- $count := cslice -}}
+    {{- range $x, $columns := $board -}}
+        {{- range $y,$marker := $columns -}}
+            {{- if and $marker (eq $marker 10|not) -}}
+                {{$count = $count.Append $marker -}}
+            {{- end -}}
+            {{- if eq $marker .turn -}}
+                {{- $diagboard = $diagBoard.Append (printf "%d%d" (str $x) (str $y)) -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{- range $diagBoard -}}
+        {{- if and (in (.|toInt|add 11|str) $diagBoard) (in (.|toInt|add 22|str) $diagBoard) (in (.|toInt|add 33|str) $diagBoard) -}}
+            {{- $gameWon = true -}}
+        {{- else if and (in (.|toInt|add -9|str) $diagBoard) (in (.|toInt|add -18|str) $diagBoard) (in (.|toInt|add -27|str) $diagBoard) -}}
+            {{- $gameWon = true -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if and (not $gameWon) (eq (len $count) 42) -}}
+    {{- .Set "gameTie" true -}}
+    {{- end -}}
+{{- end}}
+{{/* 
+0    1   2   3   4   5   6
+0   0,0 1,0 2,0 3,0 4,0 5,0 6,0
+1   0,1 1,1 2,1 3,1 4,1 5,1 6,1 
+2   0,2 1,2 2,2 3,2 4,2 5,2 6,2
+3   0,3 1,3 2,3 3,3 4,3 5,3 6,3
+4   0,4 1,4 2,4 3,4 4,4 5,4 6,4
+5   0,5 1,5 2,5 3,5 4,5 5,5 6,5 */}}
