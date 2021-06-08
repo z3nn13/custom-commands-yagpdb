@@ -49,8 +49,8 @@
                     {{ $tempData := (dict "board" $data.board "turn" $turn "nextTurn" $nextTurn "cPlayer" $cPlayer "nPlayer" $nPlayer)}}
                     {{ template "board_maker" $tempData}}
                     {{ $otherPlayer := or (and (eq $cPlayer.ID .User.ID) $nPlayer) $cPlayer}}
-                    {{ $tempData.embed.set "author" (sdict "name" "Game Over" "icon_url" ($otherPlayer.AvatarURL "256"))}}
-                    {{ $tempData.embed.set "color" 0xffdc42}}
+                    {{ $tempData.embed.Set "author" (sdict "name" "Game Over" "icon_url" ($otherPlayer.AvatarURL "256"))}}
+                    {{ $tempData.embed.Set "color" 0xffdc42}}
                     {{ editMessage nil .Message.ID (complexMessageEdit "content" (print "> You have left the game\n**Winner: **" $otherPlayer.Mention " !") "embed" (cembed $tempData.embed))}}
             {{ else }}
                     {{ if eq $cPlayer.ID $.User.ID}}
