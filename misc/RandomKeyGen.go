@@ -2,10 +2,6 @@
         Trigger: keygen
         Trigger Type: Command Type
         Usage: -keygen <length>
-
-        Copyright (c): zen | ゼン#0008; 2021
-        License: MIT
-        Repository: https://github.com/z3nn13/custom-commands-yagpdb
         */}}
 
 {{$help := cembed "title" "Keygen" "description" "\x60\x60\x60Keygen <Length:Whole number>\x60\x60\x60Generates a key base on your length"}}
@@ -20,12 +16,11 @@
         {{if not $err}}
                 {{ if $length }}
                         {{ $rLetters := split "abcdefghijklmnopqrstuvwxyz" "" }}
-                        {{ $rNumbers := split "1234567890" "" }}
                         {{ $code := "" }}
                         {{ range seq 0 $length}}
                                 {{- $x := randInt 2 -}}
                                 {{- if eq $x 0 -}}
-                                        {{- $code = print $code (index ($rNumbers|shuffle) 0) -}}
+                                        {{- $code = print $code (randInt 10) -}}
                                 {{- else -}}
                                         {{- $capital := randInt 2 -}}
                                         {{- if eq $capital 0 -}}
