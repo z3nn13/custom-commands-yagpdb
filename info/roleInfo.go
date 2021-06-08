@@ -59,8 +59,9 @@
 {{with $role}}
         {{ $createdAt := div .ID 4194304 | add 1420070400000 | mult 1000000 | toDuration | (newDate 1970 1 1 0 0 0).Add }}
         {{ $mentionable := or (and $role.Mentionable "`Yes`") "`No`" }}
-        
-        {{/* Fetching Position */}}
+        {{ $hoist := or (and $role.Hoist "`Yes`") "`No`" }}
+        {{ $managed := or (and $role.Managed "`Yes`") "`No`" }}
+
         {{ $pos := 0 }}{{ $up := "" }}{{ $down := "" }}
         {{ range $i,$v := $listroles }}{{ if reFind (str $role.ID) $v }}{{ $pos = sub $i 2 }}{{ end }}{{ end }}
         
@@ -78,13 +79,13 @@
         {{ end }}
         {{ $final_pos := printf "%s> **#%d • %s**\n%s\n> `.Position` = %d\n> (Total Roles: **%d**)" $up (add $pos 1) .Mention $down .Position (len $guildRoles)}}
 
-
         {{$fields := cslice
-        ( sdict "name" "• Name" "value" (print .Mention) "inline" true) (sdict "name" "• ID" "value" (print .ID) "inline" true)
-        ( sdict "name" "• Created At" "value" (printf "%s\n%s ago" ($createdAt.Format "Monday, January 2, 2006 at 3:04 PM MST") (humanizeTimeSinceDays $createdAt)) "inline" true)
+        ( sdict "name" "• Name" "value" .Mention "inline" true)
+        ( sdict "name" "• ID" "value" (str .ID) "inline" true)
+        ( sdict "name" "• Others" "value" (printf "> **Hoist** • %s\n> **Managed** • %s\n> **Mentionable** • %s" $hoist $managed $mentionable) "inline" true)
         ( sdict "name" "• Position ↓" "value" $final_pos "inline" true)
-        ( sdict "name" "• Color" "value" (printf "#%x" .Color ) "inline" true)
-        ( sdict "name" "• Mentionable" "value" $mentionable "inline" true)}}
+        ( sdict "name" "• Color" "value" (printf "#%x" .Color|upper) "inline" true)
+        ( sdict "name" "• Created At" "value" ($createdAt.Format "📆 Monday, January 2, 2006\n🕚 3:04 PM GMT") "inline" true)}}
         {{$embed.Set "footer" (sdict "text" (print "Triggered By • " $.User.String " • Use `-p` flag to view perms ") "icon_url" ($.User.AvatarURL "256"))}}
 
         {{/* Credits To Satty#9361 */}}
@@ -105,8 +106,6 @@
                 (sdict "name" "​" "value" (joinStr "\n" (slice $split 24)) "inline" true))}}
                 {{$embed.Set "footer" (sdict "text" (print "Triggered By • " $.User.String) "icon_url" ($.User.AvatarURL "256"))}}
         {{end}}
-
-
         {{$embed.Set "color" .Color}}
         {{$embed.Set "fields" $fields}}
         {{ sendMessage nil (cembed $embed)}}
