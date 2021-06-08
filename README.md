@@ -2,9 +2,9 @@
 
 ## Welcome To My Repo
 
-🍣 | Here is where I'll constantly update some custom commands that I created/modified.<br>
+🍣 | Here is where I'll constantly update some custom commands that I created/modded.<br>
 🍣 | If you find any errors or have suggestions to make,<br>
-here's my contact info ^^
+feel free to Dm me ^
 > **Discord**<br>
 > Username: zen | ゼン#0008  
 > ID: 547202244278222868
