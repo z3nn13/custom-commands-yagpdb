@@ -22,7 +22,7 @@
                 {{$permFlag = true}}
         {{end}}
         {{ if $roleID := reFind `\d{17,19}` $Args|toInt64}}{{/* Mention or ID */}}
-                {{ with .Guild.Role $roleID}}
+                {{ with .Guild.GetRole $roleID}}
                         {{ $role = .}}
                 {{ else }}
                         {{ $errorMsg = "Invalid ID/Role Does Not Exist"}}{{$err = true}}
@@ -38,7 +38,7 @@
                 {{/* Position Input */}}
                 {{ if $index := toInt $Args}}
                         {{if le $index (len $guildRoles)}}
-                                {{ $role = add $index 1 | index $listroles | reFind `\d{17,19}` | toInt64 | .Guild.Role }}{{$found = true}}
+                                {{ $role = add $index 1 | index $listroles | reFind `\d{17,19}` | toInt64 | .Guild.GetRole}}{{$found = true}}
                         {{end}}
                 {{end}}
                 {{if not $found}}
@@ -69,18 +69,18 @@
         {{ if eq $pos 0 }}
                 {{ $up = "-----------\n" }}
         {{ else }}
-                {{ $up = printf "> #%d • %s\n" ($pos) ((sub $pos 1 |index $guildRoles).Mention) }}                
+                {{ $up = printf "> #%d • %s\n" ($pos) ((sub $pos 1 |index $guildRoles).ID|mentionRoleID) }}                
         {{ end }}
 
         {{ if eq $pos (len $guildRoles|add -1) }}
                 {{ $down = "-----------\n"}}
         {{ else }}
-                {{ $down = printf "> #%d • %s\n" (add $pos 2) (add $pos 1|index $guildRoles).Mention }}
+                {{ $down = printf "> #%d • %s\n" (add $pos 2) ((add $pos 1|index $guildRoles).ID|mentionRoleID) }}
         {{ end }}
-        {{ $final_pos := printf "%s> **#%d • %s**\n%s\n> `.Position` = %d\n> (Total Roles: **%d**)" $up (add $pos 1) .Mention $down .Position (len $guildRoles)}}
+        {{ $final_pos := printf "%s> **#%d • %s**\n%s\n> `.Position` = %d\n> (Total Roles: **%d**)" $up (add $pos 1) (.ID|mentionRoleID) $down .Position (len $guildRoles)}}
 
         {{$fields := cslice
-        ( sdict "name" "• Name" "value" .Mention "inline" true)
+        ( sdict "name" "• Name" "value" (.ID|mentionRoleID) "inline" true)
         ( sdict "name" "• ID" "value" (str .ID) "inline" true)
         ( sdict "name" "• Others" "value" (printf "> **Hoist** • %s\n> **Managed** • %s\n> **Mentionable** • %s" $hoist $managed $mentionable) "inline" true)
         ( sdict "name" "• Position ↓" "value" $final_pos "inline" true)
