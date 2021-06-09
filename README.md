@@ -1,10 +1,13 @@
-<h1> Yagpdb Custom Commands </h1>
+# Yagpdb Custom Commands 
 
-## Welcome To My Repo
-
-🍣 | Here is where I'll constantly update some custom commands that I created/modded.<br>
+## Intro
+<p>
+🍣 | I'll try to constantly update this with custom commands that i created/modded<br>
 🍣 | If you find any errors or have suggestions to make,<br>
-feel free to Dm me ^
+feel free to DM me ^
+</p>
+
+***************
 > **Discord**<br>
 > Username: zen | ゼン#0008  
 > ID: 547202244278222868
