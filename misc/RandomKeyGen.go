@@ -4,49 +4,39 @@
         Usage: -keygen <length>
         */}}
 
-{{$help := cembed "title" "Keygen" "description" "\x60\x60\x60Keygen <Length:Whole number>\x60\x60\x60Generates a key base on your length"}}
+{{$help := cembed "title" "Keygen" "description" "```Keygen <Length:Whole number>```Generates a key base on your length"}}
 
 {{$err := false}}{{$errMsg := ""}}
 {{with .CmdArgs}}
-        {{$length := index . 0|toInt}}
-        {{ if gt $length 10000}}
-                {{$errMsg = "Length must be under 10k Limit"}}
-                {{$err = true}}
-        {{ end }}
-        {{if not $err}}
-                {{ if $length }}
+        {{with $length := index . 0|toInt}}
+                {{ if gt . 10000}}
+                        {{$errMsg = "Length must be under 10k Limit"}}
+                {{ else }}
                         {{ $rLetters := split "abcdefghijklmnopqrstuvwxyz" "" }}
                         {{ $code := "" }}
-                        {{ range seq 0 $length}}
-                                {{- $x := randInt 2 -}}
-                                {{- if eq $x 0 -}}
-                                        {{- $code = print $code (randInt 10) -}}
+                        {{ range seq 0 .}}
+                                {{- if randInt 2}}
+                                        {{- $code = randInt 10 | print $code -}}
                                 {{- else -}}
-                                        {{- $capital := randInt 2 -}}
-                                        {{- if eq $capital 0 -}}
-                                                {{- $code = print $code ((index ($rLetters|shuffle) 0)|upper) -}}
+                                        {{- if randInt 2 -}}
+                                                {{- $code = index ($rLetters|shuffle) 0 | upper | print $code -}}
                                         {{- else -}}
-                                                {{- $code = print $code ((index ($rLetters|shuffle) 0)|lower) -}}
+                                                {{- $code = index ($rLetters|shuffle) 0 | lower | print $code -}}
                                         {{- end -}}
                         {{- end}}{{end}}
-                        {{if ge (len $code) 1973}}
-                                {{ sendMessage nil (complexMessage "file" (print $code ))}}
+                        {{if ge (len $code) 1975}}
+                                {{ sendMessage nil (complexMessage "file" $code)}}
                         {{else}}
-                                {{ sendMessage nil (print "Code : " $code)}}
+                                {{ sendMessage nil (print "🔑 **Key Generated :**\n> `" $code "`")}}
                         {{end}}
-                {{ else }}        
-                        {{ $errMsg = printf "Unknown Length %q : Length must be a whole number" (index . 0)}}
-                        {{ $err = true}}
                 {{ end}}
-        {{ end }}
+        {{ else }}
+                {{ $errMsg = printf "Unknown Length %q : Length must be a whole number" (index . 0)}}
+        {{ end}}
 {{else}}
-        {{$err = true}}
+        {{sendMessage nil $help}}
 {{end}}
 
-{{if $err}}
-        {{with $errMsg}}
-                {{sendMessage nil (complexMessage "content" . "embed" $help)}}
-        {{else}}
-                {{sendMessage nil $help}}
-        {{end}}
+{{with $errMsg}}
+        {{sendMessage nil (complexMessage "content" . "embed" $help)}}
 {{end}}
