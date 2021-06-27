@@ -39,7 +39,7 @@
 </details>
 
 ***************
-## Disclaimer
+## Contact Me
 🍣 | If you find any errors or have suggestions to make,<br>
 feel free open an issue or DM me on discord ^
 
