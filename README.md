@@ -34,12 +34,12 @@
 <details>
   <summary> Tools </summary>
   
-  + 📁 ┃・ [Open Folder](/misc)   
-      - 💾 |  ・ [snipe.go](/misc/keyGen.go) - command to "snipe" the last deleted message<br>
+  + 📁 ┃・ [Open Folder](/tools)   
+      - 💾 |  ・ [snipe.go](/tools/snipe.go) - command to "snipe" the last deleted message<br>
 </details>
 
 ***************
-## Contact Me
+## Disclaimer
 🍣 | If you find any errors or have suggestions to make,<br>
 feel free open an issue or DM me on discord ^
 
