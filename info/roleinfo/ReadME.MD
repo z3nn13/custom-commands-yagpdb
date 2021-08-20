@@ -1,6 +1,8 @@
 # Role Info Command
 ## 📘 | Description
-A simple command to view a role's settings.
+A simple command to view a role's settings.   
+Usage: `-role <Role:Name/ID> [Flag]`
+Flags: `-permissions` | `-p` 
 
 ## 📸 | Image Preview
 ![image](https://i.ibb.co/DMDXXHq/image.pngg")
