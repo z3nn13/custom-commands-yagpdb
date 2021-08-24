@@ -21,7 +21,7 @@
 
 - 📁 ┃・ [Open Folder](/info)   
     - 📁 ┃・ [role info](/info/roleinfo)   
-        • 💾 |  ・ [roleinfo.go](/info/roleinfo/roleinfo.go) - A command to see a role's settings ⚙️<br>
+        • 💾 |  ・ [roleinfo.go](/info/roleinfo/roleInfo.go) - A command to see a role's settings ⚙️<br>
 </details>
 
 <details>
