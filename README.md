@@ -1,9 +1,9 @@
 # Yagpdb Custom Commands 
 
-## Intro
+## Introduction
 
-🍣 | Welcome to this repo   
-🍣 | Here is where I'll be uploading custom commands that i created/modded for Jonas747's YAGPDB.<br>
+🍣 | Welcome to my repo   
+ I'll be uploading some non-commissioned custom commands that I scripted for Jonas747's YAGPDB here.<br>
 
 ***************
 ## List of commands
@@ -41,7 +41,7 @@
 ***************
 ## Disclaimer
 🍣 | If you find any errors or have suggestions to make,<br>
-feel free open an issue or DM me on discord ^
+feel free to open an issue or Direct Message me on discord ^
 
 
 
