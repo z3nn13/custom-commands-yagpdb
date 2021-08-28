@@ -41,7 +41,7 @@
 ***************
 ## Disclaimer
 🍣 | If you find any errors or have suggestions to make,<br>
-feel free to open an issue or Direct Message me on discord ^
+Feel free to open an issue or send a Direct Message on Discord ^
 
 
 
