@@ -1,6 +1,6 @@
 {{/*
         
-        Recommended Trigger: \A(?:\-|<@!?204255221017214977>)\s*(?:r(?:ole)?\s*i(?:nfo)?)(?: +|\z)
+        Recommended Trigger: \A(?:\-|<@!?204255221017214977>)\s*(?:r(?:ole)?i(?:nfo)?)(?: +|\z)
         Trigger Type: Regex
         Usage: -roleinfo <Role:ID/Mention/Name/Position> [-p]
         Aliases: ri, rolei, rinfo
