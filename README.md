@@ -2,7 +2,7 @@
 
 ## Introduction
 
-🍣 | Welcome to my repo   
+🍣 | Welcome to my repo
  I'll be uploading some non-commissioned custom commands that I scripted for Jonas747's YAGPDB here.<br>
 
 ***************
@@ -39,8 +39,7 @@
 </details>
 
 ***************
-## Disclaimer
-🍣 | If you find any errors or have suggestions to make,<br>
+🍣 | If you find any errors or would like to suggest something,<br>
 Feel free to open an issue or send a Direct Message on Discord ^
 
 
